@@ -2,14 +2,14 @@ const pool = require('../db');
 
 exports.findUserByEmail = async (email) => {
   return pool.query(
-    `SELECT id, email FROM users WHERE lower(email) = lower($1) LIMIT 1`,
+    `SELECT id, email FROM users WHERE email = $1 LIMIT 1`,
     [email]
   );
 };
 
 exports.findUserByUsername = async (username) => {
   return pool.query(
-    `SELECT id, username FROM users WHERE lower(username) = lower($1) LIMIT 1`,
+    `SELECT id, username FROM users WHERE username = $1 LIMIT 1`,
     [username]
   );
 };
@@ -19,7 +19,7 @@ exports.findUserForLogin = async (identifier) => {
     `
       SELECT id, email, username, password_hash, display_name, date_of_birth, created_at
       FROM users
-      WHERE lower(email) = lower($1) OR lower(username) = lower($1)
+      WHERE email = $1 OR username = $1
       LIMIT 1
     `,
     [identifier]
