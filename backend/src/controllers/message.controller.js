@@ -73,3 +73,26 @@ exports.updateMessage = async (req, res) => {
     return res.status(500).json({ error: "Database error" });
   }
 };
+
+exports.deleteMessage = async (req, res) => {
+  const { channelId, messageId } = req.params;
+
+  try {
+    const result = await messageService.deleteMessage({
+      channelId,
+      messageId,
+    });
+
+    if (!result) {
+      return res.status(404).json({ error: "Message not found" });
+    }
+
+    return res.json({
+      deleted: true,
+      message: result,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Database error" });
+  }
+};

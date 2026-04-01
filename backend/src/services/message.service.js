@@ -19,3 +19,10 @@ exports.updateMessage = async ({ channelId, messageId, content, deleteAttachment
     hasContent,
   });
 };
+
+exports.deleteMessage = async ({ channelId, messageId }) => {
+  return messageModel.deleteMessage({
+    channelId,
+    messageId,
+  });
+};

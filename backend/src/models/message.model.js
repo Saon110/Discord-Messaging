@@ -104,3 +104,20 @@ exports.updateMessage = async ({ channelId, messageId, content, deleteAttachment
     client.release();
   }
 };
+
+exports.deleteMessage = async ({ channelId, messageId }) => {
+  const result = await pool.query(
+    `
+      DELETE FROM messages
+      WHERE id = $1 AND channel_id = $2
+      RETURNING id, channel_id, author_id, content, created_at, edited_at
+    `,
+    [messageId, channelId]
+  );
+
+  if (result.rowCount === 0) {
+    return null;
+  }
+
+  return result.rows[0];
+};
