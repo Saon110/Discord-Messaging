@@ -26,3 +26,13 @@ exports.deleteMessage = async ({ channelId, messageId }) => {
     messageId,
   });
 };
+
+// ADD REACTION
+exports.addReaction = async ({ messageId, userId, emoji }) => {
+  return messageModel.addReaction({ messageId, userId, emoji });
+};
+
+// REMOVE REACTION
+exports.removeReaction = async ({ messageId, userId, emoji }) => {
+  return messageModel.removeReaction({ messageId, userId, emoji });
+};
