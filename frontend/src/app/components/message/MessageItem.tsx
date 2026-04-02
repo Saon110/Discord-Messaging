@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Message, useApp } from "../../contexts/AppContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
 import { Edit, Trash2, Pin, Smile, MoreVertical } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
@@ -44,11 +45,12 @@ export function MessageItem({ message }: MessageItemProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { users, deleteMessage, togglePin, toggleReaction } = useApp();
+  const { user: authUser } = useAuth();
 
-  const user = users.find((u) => u.id === message.userId);
-  const currentUserId = "user-1"; // In real app, get from auth context
+  const messageUser = users.find((u) => u.id === message.userId);
+  const currentUserId = authUser?.id || "user-1";
 
-  if (!user) return null;
+  if (!messageUser) return null;
 
   const handleDelete = async () => {
     try {
@@ -102,18 +104,18 @@ export function MessageItem({ message }: MessageItemProps) {
         >
           <div className="flex gap-4 pt-0.5 pb-0.5">
             {/* Avatar */}
-            {user && (
-              <UserProfilePopover user={user}>
+            {messageUser && (
+              <UserProfilePopover user={messageUser}>
                 <div className="w-10 h-10 rounded-full bg-[#5865f2] flex items-center justify-center text-white flex-shrink-0 overflow-hidden cursor-pointer mt-0.5">
-                  {user.avatar ? (
+                  {messageUser.avatar ? (
                     <img
-                      src={user.avatar}
-                      alt={user.displayName}
+                      src={messageUser.avatar}
+                      alt={messageUser.displayName}
                       className="w-full h-full object-cover"
                     />
                   ) : (
                     <span className="text-sm font-semibold">
-                      {user.displayName.charAt(0).toUpperCase()}
+                      {messageUser.displayName.charAt(0).toUpperCase()}
                     </span>
                   )}
                 </div>
@@ -124,7 +126,7 @@ export function MessageItem({ message }: MessageItemProps) {
             <div className="flex-1 min-w-0">
               <div className="flex items-baseline gap-2">
                 <span className="font-medium text-white text-[15px] hover:underline cursor-pointer">
-                  {user?.displayName}
+                  {messageUser.displayName}
                 </span>
                 <span className="text-xs text-[#949ba4]">
                   {formatDistanceToNow(new Date(message.createdAt), { addSuffix: true })}
